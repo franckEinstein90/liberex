@@ -40,12 +40,10 @@ Private Sub deduce_file_type()
     End Select
 End Sub
 
-Public Sub initByPath(ByVal filePath As String)
-   
+Public Sub initialize(ByVal filePath As String)
     Dim pathElements() As String
        
-    'fills in values variables related to path
-    'and file name
+    'fills in values variables related to path and file name
     m_filePath = filePath
     pathElements = Split(m_filePath, "\")
     m_fileName = pathElements(UBound(pathElements))
