@@ -9,8 +9,11 @@ Private wksheets() As String
 Private currentWKS As Integer
 
 Private m_recordPointer As Long
+
+
 'total number of records (1 per row) in data source
 Private m_numRecords As Long
+Private m_numColumns As Long
 
 
 '************************************************
@@ -18,7 +21,9 @@ Private m_numRecords As Long
 
 Private m_dataTable As Excel.ListObject
     
-
+Public Property Get numRecords() As Long
+    numRecords = m_numRecords
+End Property
 Public Property Get noMoreRecords() As Boolean
     If m_recordPointer > m_numRecords Then
         noMoreRecords = True
@@ -31,35 +36,21 @@ Public Property Get currentRecordNumber() As Long
     currentRecordNumber = m_numRecords
 End Property
 
-Public Sub getNextRow( _
-    ByRef recordContainer As structInputFileInfo, _
-    ByRef colsTemplate As Scripting.dictionary)
-    
-    'getNextRow reads the next row of data
-    'and stores it in the recordContainer
-    'as specified by the colsTemplate structure
-    Dim colIdx As Variant
-    Dim colName As String
+Public Function getNextRow(Optional delimiter As String = "|") As String
+    ' getNextRow reads the next row of data and returns it
+    ' as a text string with each field delimited with
+    ' the character designated in delimiter.
+    Dim colCounter As Long
     
     
-        
-    With recordContainer
-        .Clear
-        For Each colIdx In colsTemplate
-            colName = colsTemplate(colIdx)
-            Select Case colName
-                Case "Name"
-                    Call .value("FileName", m_dataTable.DataBodyRange.Cells(m_recordPointer, colIdx).value)
-                Case "Path"
-                    Call .value("Path", m_dataTable.DataBodyRange.Cells(m_recordPointer, colIdx).value)
-                Case "Size"
-                    Call .value("Size", m_dataTable.DataBodyRange.Cells(m_recordPointer, colIdx).value)
-                End Select
-        Next colIdx
-    End With
+    For colCounter = 1 To m_numColumns
+        If colCounter > 1 Then getNextRow = getNextRow & delimiter
+        getNextRow = getNextRow & m_dataTable.DataBodyRange.Cells(m_recordPointer, colCounter).value
+    Next colCounter
     
+ 
     m_recordPointer = m_recordPointer + 1
-End Sub
+End Function
 
 
 Public Sub initialize(ByRef dataSource As objDataSource)
@@ -70,8 +61,10 @@ Public Sub initialize(ByRef dataSource As objDataSource)
     
     Set xlApp = New Excel.Application
     xlApp.Visible = True
-    Set wkb = xlApp.Workbooks.Open(sourceFile.path, True, False)
+    Set wkb = xlApp.Workbooks.Open(dataSource.path, True, False)
     With wkb
+        'string delimited by '-' that collects the
+        'names of the sheets in the workbook
         For ctr = 1 To .sheets.Count
             If ctr > 1 Then
                 sheetNames = sheetNames & "-" & .sheets(ctr).name
@@ -85,7 +78,10 @@ Public Sub initialize(ByRef dataSource As objDataSource)
     Set wks = wkb.sheets(wksheets(0))
     Set m_dataTable = wks.ListObjects("Table1")
     m_recordPointer = 1
+    
+    
     m_numRecords = m_dataTable.DataBodyRange.Rows.Count
+    m_numColumns = m_dataTable.DataBodyRange.Columns.Count
 End Sub
 
 Sub closeSource()
