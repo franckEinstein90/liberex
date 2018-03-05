@@ -1,6 +1,8 @@
 Option Compare Database
 Option Explicit
 
+'Requires reference to Microsoft Excel Object Library
+
 'Internals of worksheet
 Private xlApp As Excel.Application
 Private wksheets() As String
@@ -42,7 +44,7 @@ Public Sub getNextRow( _
     
         
     With recordContainer
-        .clear
+        .Clear
         For Each colIdx In colsTemplate
             colName = colsTemplate(colIdx)
             Select Case colName
@@ -60,7 +62,7 @@ Public Sub getNextRow( _
 End Sub
 
 
-Public Sub openSourceForReading(ByRef dataSource As objDataSource)
+Public Sub initialize(ByRef dataSource As objDataSource)
     Dim wkb As Excel.Workbook
     Dim wks As Excel.Worksheet
     Dim sheetNames As String
@@ -70,7 +72,7 @@ Public Sub openSourceForReading(ByRef dataSource As objDataSource)
     xlApp.Visible = True
     Set wkb = xlApp.Workbooks.Open(sourceFile.path, True, False)
     With wkb
-        For ctr = 1 To .sheets.count
+        For ctr = 1 To .sheets.Count
             If ctr > 1 Then
                 sheetNames = sheetNames & "-" & .sheets(ctr).name
             Else
@@ -83,10 +85,11 @@ Public Sub openSourceForReading(ByRef dataSource As objDataSource)
     Set wks = wkb.sheets(wksheets(0))
     Set m_dataTable = wks.ListObjects("Table1")
     m_recordPointer = 1
-    m_numRecords = m_dataTable.DataBodyRange.Rows.count
+    m_numRecords = m_dataTable.DataBodyRange.Rows.Count
 End Sub
 
 Sub closeSource()
      xlApp.Workbooks.Close
 End Sub
    
+
