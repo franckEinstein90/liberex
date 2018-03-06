@@ -2,8 +2,6 @@ Option Compare Database
 Option Explicit
 
 
-'Class constants
-Private Const tblScanTypes As String = "tblTSPScanTypes"
 
 Private m_sourceFile As objComputerFile
 
@@ -11,9 +9,6 @@ Private m_sourceFile As objComputerFile
 Public m_dataGrabID As Long
 Public m_numFileUpdated As Long
 
-Public m_businessOwnerID As Long
-Public m_scan_file_type As String
-Public is_group_data As Boolean
 
 '************************************************
 'cols format contains the indexes of each columns
@@ -120,6 +115,10 @@ Public Sub openSource()
             Set recordList = New objDataSetText
         Case "xls", "xlsx"
             Set recordList = New objDataSetExcel
+	Case "xml"
+	...
+	Case "CSV"
+	...
         Case Else
             MsgBox ("unable to glob content in this format")
             Call Err.Raise(10015, "Unable to read records")
