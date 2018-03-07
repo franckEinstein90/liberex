@@ -1,25 +1,21 @@
 Option Compare Database
 Option Explicit
-
 'Requires reference to Microsoft Excel Object Library
 
-'Internals of worksheet
-Private xlApp As Excel.Application
-Private wksheets() As String
-Private currentWKS As Integer
+Private Type TobjDataSetExcel
+    'Internals of worksheet
+    xlApp As Excel.Application
+    wksheets() As String
+    currentWKS As Integer
+    m_recordPointer As Long
 
-Private m_recordPointer As Long
+    'total number of records (1 per row) in data source
+    m_numRecords As Long
+    m_numColumns As Long
+    Private m_dataTable As Excel.ListObject
+end Type
+Implements iDataSet
 
-
-'total number of records (1 per row) in data source
-Private m_numRecords As Long
-Private m_numColumns As Long
-
-
-'************************************************
-'Reading from an excel file
-
-Private m_dataTable As Excel.ListObject
     
 Public Property Get numRecords() As Long
     numRecords = m_numRecords
@@ -84,7 +80,7 @@ Public Sub initialize(ByRef dataSource As objDataSource)
     m_numColumns = m_dataTable.DataBodyRange.Columns.Count
 End Sub
 
-Sub closeSource()
+public Sub closeSource()
      xlApp.Workbooks.Close
 End Sub
    
