@@ -1,7 +1,13 @@
 'IDataSource
 Option Explicit
 
-public property get path() As String
+public property get fullPath() As String
+end property
+
+public property get folderPath() As String
+end property
+
+public property Get exists() as boolean
 end property
 
 public property Get fileName() As String
