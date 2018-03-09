@@ -2,13 +2,14 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "iDataSet"
+Attribute VB_Name = "IDataSet"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Compare Database
 Option Explicit
+
 'iDataSet is the interface for a variety
 'of data readers for different formats
 'The data readers are "plugged" in
@@ -21,19 +22,28 @@ Option Explicit
 Public Property Get EOF() As Boolean
 End Property
 
-Public Sub n() 'next
+Public Sub moveNext() 
 End Sub
 
-Public Sub o(ByVal datasource As String) 'open
+Public Sub openForReading( _
+    dataSource as Idatasource, _
+    Optional dataStructure as IDataStructure)
+
+end sub
+
+Public Sub read(_
+    datasource As IDataSource, _
+    Optional dataStructure as IDataStructure) 
+
 End Sub
 
-Public Property Get c() As Long 'count
+Public Property Get count() As Long 
 End Property
 
 
-Public Sub i() 'initialize
+Public Sub initialize() 'initialize
 End Sub
 
-Public Sub x() 'close
+Public Sub close() 'close
 End Sub
 
