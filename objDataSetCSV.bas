@@ -1,8 +1,23 @@
 Option Explicit
 
-
+Implements IDataSet
 Dim fieldDict As Object
-Dim csvRS As ADODB.recordset
+
+Private m_csvRS As ADODB.recordset
+Private m_cn as ADODB.connection
+
+public property get IDataSet_EOF()
+    IDataSet_EOf = m_csvRS.EOF()
+end property
+
+public Sub IDataSet_readDataSource(byval dataSource as IDataSource)
+   
+    m_cN.Open ("Provider=Microsoft.Jet.OLEDB.4.0;" & _
+                   "Data Source=" & dataSource.Path & ";" & _
+                   "Extended Properties=""text; HDR=Yes; FMT=Delimited; IMEX=1;""")
+    m_csvRS.ActiveConnection = m_cn
+    m_csvRS.Source = "select * from " & dataSource.fileName
+end sub
 
 Property Get recordset() As ADODB.recordset
     Set recordset = csvRS
