@@ -12,7 +12,7 @@ Option Explicit
 'Microsoft Scripting Runtime"
 'Microsoft VBScript Regular Expression 5.5
 
-Private m_patternDictionary As New Scripting.Dictionary
+Private m_patternDictionary As New Scripting.dictionary
 Private m_pattern As String
 
 Public Sub addPattern(ByVal patternName As String, ByVal pattern As String)
@@ -48,10 +48,10 @@ Public Sub match( _
                 values.Add matches(0).SubMatches(ctr)
             Next ctr
             Call processor.process(key, values)
+            GoTo ExitMatcher
         End If
     Next key
-    
-    
-
- End Sub
+    Stop 'no match?
+ExitMatcher:
+End Sub
 
