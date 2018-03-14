@@ -11,9 +11,5 @@ Option Explicit
 
 
 
-Public Sub process(ByVal typeName As String, values As Collection)
-    Dim i As Long
-    For i = 1 To values.count
-        Debug.Print values(i)
-    Next i
-End Sub
+Public Function process(ByVal typeName As String, values As Collection) As Variant
+End Function

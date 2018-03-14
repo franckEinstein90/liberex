@@ -12,17 +12,22 @@ Option Explicit
 'Microsoft Scripting Runtime"
 'Microsoft VBScript Regular Expression 5.5
 
-Private m_patternDictionary As New Scripting.dictionary
-Private m_pattern As String
+Private m_patternDictionary As New Scripting.Dictionary
+
 
 Public Sub addPattern(ByVal patternName As String, ByVal pattern As String)
     Dim regex As New RegExp
+    If Left(pattern, 1) = "(" And Right(pattern, 1) = ")" Then GoTo BuildRegex
+    pattern = "(" & pattern & ")"
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+BuildRegex:
     With regex
         .Global = True
         .MultiLine = True
         .IgnoreCase = False
         .pattern = "^" & pattern & "$"
     End With
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     m_patternDictionary.Add key:=patternName, Item:=regex
 End Sub
 
@@ -30,9 +35,9 @@ Public Sub addFieldDescriptor(ByVal fieldPattern As String)
     m_pattern = m_pattern & "(" & fieldPattern & ")"
 End Sub
 
-Public Sub match( _
+Public Function match( _
     processor As IDataProcessor, _
-    ByVal recordInformation As String)
+    ByVal recordInformation As String) As Variant
     
     Dim key As Variant
     Dim testResult As Boolean
@@ -47,11 +52,12 @@ Public Sub match( _
             For ctr = 0 To matches(0).SubMatches.count - 1
                 values.Add matches(0).SubMatches(ctr)
             Next ctr
-            Call processor.process(key, values)
-            GoTo ExitMatcher
+            match = processor.process(key, values)
+            GoTo EndFunction
         End If
     Next key
-    Stop 'no match?
-ExitMatcher:
-End Sub
+    values.Add (recordInformation)
+    match = processor.process("", values)
+EndFunction:
+ End Function
 
