@@ -1,4 +1,4 @@
-Librerex – A content inventorying system for Parks Canada
+Librerex – A content inventorying system
 
 User Documentation
 Storing File Related information
